@@ -9,8 +9,8 @@ class PostgresAccessor:
                  host: str = PostgresSettings.HOST,
                  port: int = PostgresSettings.PORT,
                  database: str = PostgresSettings.DATABASE_NAME,
-                 username: str = PostgresSettings.USERNAME,
-                 password: str = PostgresSettings.PASSWORD
+                 username: str = PostgresSettings.POSTGRES_USERNAME,
+                 password: str = PostgresSettings.POSTGRES_PASSWORD
                  ):
         self.host = host
         self.port = port

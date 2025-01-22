@@ -23,14 +23,14 @@ def create_access_token(data: dict) -> str:
     expire = datetime.now(timezone.utc) + timedelta(minutes=AuthenticationSettings.JWT_EXPIRE_MINUTES)
     data_to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(payload=data_to_encode,
-                             key=AuthenticationSettings.JWT_SECRET,
+                             key=AuthenticationSettings.JWT_SECRET_KEY,
                              algorithm=AuthenticationSettings.JWT_ALGORITHM)
     return encoded_jwt
 
 
 @auth_router.post("/register",
                   response_class=JSONResponse)
-async def register(new_user: Annotated[User, Body(embed=True)]):
+async def register(new_user: Annotated[User, Body(..., embed=False)]):
     username, password = new_user.username, new_user.password
     fetched_user = postgres_authentication_accessor.get_user(username)
     if fetched_user:
@@ -47,7 +47,7 @@ async def register(new_user: Annotated[User, Body(embed=True)]):
 
 @auth_router.post("/login",
                   response_class=JSONResponse)
-async def login(user: Annotated[User, Body(embed=True)]):
+async def login(user: Annotated[User, Body(..., embed=False)]):
     username, password = user.username, user.password
     fetched_user = postgres_authentication_accessor.get_user(username)
     if not fetched_user:

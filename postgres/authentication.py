@@ -11,8 +11,8 @@ class PostgresAuthenticationAccessor(PostgresAccessor):
     def __init__(self, host: str = PostgresSettings.HOST,
                  port: int = PostgresSettings.PORT,
                  database: str = PostgresSettings.DATABASE_NAME,
-                 username: str = PostgresSettings.USERNAME,
-                 password: str = PostgresSettings.PASSWORD):
+                 username: str = PostgresSettings.POSTGRES_USERNAME,
+                 password: str = PostgresSettings.POSTGRES_PASSWORD):
         super().__init__(host, port, database, username, password)
         self.table = self.TABLE_NAME
 
@@ -30,7 +30,9 @@ class PostgresAuthenticationAccessor(PostgresAccessor):
         query = f"INSERT INTO {self.TABLE_NAME} (username, hashed_password) VALUES ('{username}', '{hashed_password}')"
         try:
             self.cursor.execute(query)
+            self.connection.commit()
         except psycopg2.DatabaseError:
+            self.connection.rollback()
             return False
         else:
             return True
