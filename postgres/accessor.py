@@ -8,7 +8,7 @@ class PostgresAccessor:
     def __init__(self,
                  host: str = PostgresSettings.HOST,
                  port: int = PostgresSettings.PORT,
-                 database: str = PostgresSettings.DATABASE_NAME,
+                 database: str = PostgresSettings.POSTGRES_DATABASE,
                  username: str = PostgresSettings.POSTGRES_USERNAME,
                  password: str = PostgresSettings.POSTGRES_PASSWORD
                  ):
