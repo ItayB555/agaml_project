@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  redis-cache:
+    container_name: redis
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - cache:/data
+  db:
+    container_name: postgresdb
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    volumes:
+      - './project_data/:/docker-entrypoint-initdb.d/'
+    ports:
+      - '5432:5432'
+
+volumes:
+  cache:
+    driver: local
