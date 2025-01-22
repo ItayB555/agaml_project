@@ -10,7 +10,7 @@ from models import Employer
 from postgres import PostgresEmployersAccessor
 from routes import get_current_user
 
-employers_router = APIRouter(tags=["Employees"],
+employers_router = APIRouter(tags=["Employers"],
                              dependencies=[Depends(get_current_user)])
 postgres_employers_accessor = PostgresEmployersAccessor()
 redis_cache = RedisCache()
