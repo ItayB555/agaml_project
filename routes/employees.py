@@ -14,8 +14,8 @@ postgres_employees_accessor = PostgresEmployeesAccessor()
 
 
 @employees_router.get("/")
-async def get_employees(filter_text: str):
-    return postgres_employees_accessor.search(filter_text)
+async def get_employees(filter_text: str, page: int):
+    return postgres_employees_accessor.search(filter_text, page)
 
 
 @employees_router.post("/")
