@@ -17,7 +17,7 @@ class PostgresEmployeesAccessor(PostgresAccessor):
         super().__init__(host, port, database, username, password)
         self.table = self.TABLE_NAME
 
-    def search(self, filter_text: str, page: int = 1) -> list:
+    def search(self, filter_text: str, page: int) -> list:
 
         offset = (page - 1) * PAGE_SIZE
         query = f"SELECT * FROM {self.TABLE_NAME} WHERE first_name LIKE '%{filter_text}%' OR last_name LIKE '%{filter_text}%' OR position LIKE '%{filter_text}%' OR government_id LIKE '%{filter_text}%' LIMIT {PAGE_SIZE} OFFSET {offset}"
