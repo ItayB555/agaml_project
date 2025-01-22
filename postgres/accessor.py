@@ -1,6 +1,7 @@
 import psycopg2
 
 from config import PostgresSettings
+from exceptions import DatabaseConnectionError
 
 
 class PostgresAccessor:
@@ -16,10 +17,12 @@ class PostgresAccessor:
         self.database = database
         self.username = username
         self.password = password
-
-        self.connection = psycopg2.connect(
-            host=self.host, port=self.port,
-            database=self.database,
-            user=self.username, password=self.password
-        )
-        self.cursor = self.connection.cursor()
+        try:
+            self.connection = psycopg2.connect(
+                host=self.host, port=self.port,
+                database=self.database,
+                user=self.username, password=self.password
+            )
+            self.cursor = self.connection.cursor()
+        except psycopg2.OperationalError:
+            raise DatabaseConnectionError(self.host, self.port)

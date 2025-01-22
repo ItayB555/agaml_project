@@ -2,6 +2,9 @@ import uvicorn
 from fastapi import FastAPI
 
 from config import ServerSettings
+from exceptions import DatabaseConnectionError
+from exceptions.handlers import database_connection_error_handler
+from routes import auth_router
 
 app = FastAPI()
 
@@ -10,6 +13,9 @@ app = FastAPI()
 async def healthcheck():
     return {"health": True}
 
+
+app.add_exception_handler(DatabaseConnectionError, handler=database_connection_error_handler)
+app.include_router(router=auth_router, prefix="/auth")
 
 if __name__ == '__main__':
     uvicorn.run(

@@ -1,7 +1,7 @@
 import psycopg2
 
 from config import PostgresSettings
-from models import UserInDB, User
+from models import UserInDB
 from postgres.accessor import PostgresAccessor
 
 
