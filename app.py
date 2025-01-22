@@ -14,7 +14,10 @@ async def healthcheck():
     return {"health": True}
 
 
+# Exception handling
 app.add_exception_handler(DatabaseConnectionError, handler=database_connection_error_handler)
+
+# Routers
 app.include_router(router=auth_router, prefix="/auth")
 
 if __name__ == '__main__':
