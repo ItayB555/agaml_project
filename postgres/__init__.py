@@ -1,1 +1,1 @@
-from postgres.authentication import PostgresAuthenticationAccessor
+from postgres.users_accessor import PostgresAuthenticationAccessor

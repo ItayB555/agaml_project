@@ -2,20 +2,29 @@ from datetime import datetime, timezone, timedelta
 from typing import Annotated
 
 import jwt
-from fastapi import APIRouter, Body
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from starlette import status
 from starlette.responses import JSONResponse
 
 from config import AuthenticationSettings
-from models import User
+from models import User, Token
 from postgres import PostgresAuthenticationAccessor
 
 auth_router = APIRouter(tags=["Authentication"])
 password_context = CryptContext(schemes=["bcrypt"])
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 postgres_authentication_accessor = PostgresAuthenticationAccessor()
+
+
+def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    try:
+        payload = jwt.decode(token, AuthenticationSettings.JWT_SECRET_KEY,
+                             algorithms=[AuthenticationSettings.JWT_ALGORITHM])
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token Invalid")
+    return payload
 
 
 def create_access_token(data: dict) -> str:
@@ -45,9 +54,8 @@ async def register(new_user: Annotated[User, Body(..., embed=False)]):
         return JSONResponse(status_code=status.HTTP_406_NOT_ACCEPTABLE, content={"message": "User creation failed"})
 
 
-@auth_router.post("/login",
-                  response_class=JSONResponse)
-async def login(user: Annotated[User, Body(..., embed=False)]):
+@auth_router.post("/login")
+async def login(user: Annotated[OAuth2PasswordRequestForm, Depends()]):
     username, password = user.username, user.password
     fetched_user = postgres_authentication_accessor.get_user(username)
     if not fetched_user:
@@ -57,7 +65,4 @@ async def login(user: Annotated[User, Body(..., embed=False)]):
     if not is_password_valid:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content=dict(message=f"Invalid username or password"))
-    return JSONResponse(status_code=status.HTTP_200_OK,
-                        content=dict(message="Login successful",
-                                     jwt=create_access_token(dict(username=username)))
-                        )
+    return Token(access_token=create_access_token(dict(username=username)), token_type="Bearer")
