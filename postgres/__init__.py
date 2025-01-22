@@ -1,3 +1,4 @@
 from postgres.users_accessor import PostgresAuthenticationAccessor
 from postgres.employees_accessor import PostgresEmployeesAccessor
+from postgres.employers_accessor import PostgresEmployersAccessor
 from postgres.consts import PAGE_SIZE
