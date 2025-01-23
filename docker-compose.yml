@@ -1,14 +1,7 @@
 version: '3.9'
 
 services:
-  redis-cache:
-    container_name: redis
-    image: redis
-    restart: always
-    volumes:
-      - cache:/data
-    ports:
-      - "6379:6379"
+
   postgresql-db:
     container_name: postgresdb
     image: postgres
@@ -25,15 +18,26 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d" , "$$POSTGRES_DATABASE"]
-      timeout: 10s
-      retries: 3
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis-cache:
+    container_name: redis
+    image: redis
+    restart: always
+    volumes:
+      - cache:/data
+    ports:
+      - "6379:6379"
 
   backend:
     container_name: backend_application
     build: .
     depends_on:
-      - postgresql-db
+      postgresql-db:
+        condition: service_healthy
     ports:
       - "8050:8050"
     restart: on-failure
