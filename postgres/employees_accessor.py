@@ -3,7 +3,7 @@ import psycopg2
 from config import PostgresSettings
 from models import Employee
 from postgres.consts import PAGE_SIZE
-from postgres.accessor import PostgresAccessor
+from postgres.base_accessor import PostgresAccessor
 
 
 class PostgresEmployeesAccessor(PostgresAccessor):
