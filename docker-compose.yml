@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  redis-cache:
+    container_name: redis
+    image: redis
+    restart: always
+    volumes:
+      - cache:/data
+    ports:
+      - "6379:6379"
+  postgresql-db:
+    container_name: postgresdb
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    volumes:
+      - './project_data/:/docker-entrypoint-initdb.d/'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  backend:
+    container_name: backend_application
+    build: .
+    depends_on:
+      - postgresql-db
+    ports:
+      - "8050:8050"
+volumes:
+  cache:
+    driver: local
