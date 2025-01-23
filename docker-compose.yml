@@ -24,6 +24,10 @@ services:
       - './project_data/:/docker-entrypoint-initdb.d/'
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d" , "$$POSTGRES_DATABASE"]
+      timeout: 10s
+      retries: 3
 
   backend:
     container_name: backend_application
@@ -32,6 +36,7 @@ services:
       - postgresql-db
     ports:
       - "8050:8050"
+    restart: on-failure
 volumes:
   cache:
     driver: local

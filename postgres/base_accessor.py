@@ -25,7 +25,7 @@ class PostgresAccessor:
                 host=self.host, port=self.port,
                 database=self.database,
                 user=self.username, password=self.password,
-                connect_timeout=10
+                connect_timeout=20
             )
             self.cursor = self.connection.cursor()
         except psycopg2.OperationalError:
