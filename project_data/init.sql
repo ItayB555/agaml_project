@@ -1,6 +1,6 @@
 
 CREATE TABLE users (
-    user_id SERIAL,
+    user_id SERIAL PRIMARY KEY,
     username TEXT,
     hashed_password TEXT
 );
