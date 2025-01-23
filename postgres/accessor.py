@@ -1,3 +1,5 @@
+import logging
+
 import psycopg2
 
 from config import PostgresSettings
@@ -18,10 +20,12 @@ class PostgresAccessor:
         self.username = username
         self.password = password
         try:
+            logging.info(f"Connecting to DB - This may take some time as it is being initialized with data...")
             self.connection = psycopg2.connect(
                 host=self.host, port=self.port,
                 database=self.database,
-                user=self.username, password=self.password
+                user=self.username, password=self.password,
+                connect_timeout=10
             )
             self.cursor = self.connection.cursor()
         except psycopg2.OperationalError:
