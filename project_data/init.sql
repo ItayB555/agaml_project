@@ -1,8 +1,8 @@
 
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
-    username TEXT,
-    hashed_password TEXT
+    username TEXT NOT NULL,
+    hashed_password TEXT NOT NULL
 );
 
 CREATE TABLE employees (
