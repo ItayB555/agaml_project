@@ -17,7 +17,7 @@ redis_cache = RedisCache()
 
 
 @employers_router.get("/")
-async def get_employees(filter_text: str, page: int = 1):
+async def get_employers(filter_text: str, page: int = 1):
     cache_key = f"{filter_text}_{page}_employers"
     cache = redis_cache.server.get(cache_key)
     if cache:
@@ -28,12 +28,12 @@ async def get_employees(filter_text: str, page: int = 1):
 
 
 @employers_router.post("/")
-async def insert_employee(new_employee: Employer):
-    was_insertion_successful = postgres_employers_accessor.insert(new_employee)
+async def insert_employer(new_employer: Employer):
+    was_insertion_successful = postgres_employers_accessor.insert(new_employer)
     if was_insertion_successful:
         return JSONResponse(status_code=status.HTTP_201_CREATED,
-                            content=dict(message="Employee was created successfully",
-                                         employee=new_employee.dict()))
+                            content=dict(message="Employer was created successfully",
+                                         employee=new_employer.dict()))
     return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                        content=dict(message="Employee was not created, check the payload",
-                                     employee=new_employee.dict()))
+                        content=dict(message="Employer was not created, check the payload",
+                                     employee=new_employer.dict()))
